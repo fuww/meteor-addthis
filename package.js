@@ -2,7 +2,7 @@
 
 Package.describe({
   name: 'fuww:addthis',
-  version: '0.0.1',
+  version: '0.0.2',
   summary: 'A lightweight package to add addthis easily to meteor',
   git: 'https://github.com/fuww/meteor-addthis.git',
   documentation: 'README.md'

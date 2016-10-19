@@ -5,11 +5,23 @@ import {$} from 'meteor/jquery';
 const addthis = {};
 const calls = [];
 
+function callAddThisMethod(methodName, args) {
+  const addthis = window.addthis;
+
+  const method = addthis[methodName];
+  if (!method) {
+    Log.warn(`can not call addthis method: ${methodName}`);
+    return;
+  }
+
+  return method.apply(addthis, args);
+}
+
 function queue(...args) {
   const addthis = window.addthis;
 
   if (addthis) {
-    return addthis[this].apply(addthis, args);
+    return callAddThisMethod(this, args);
   }
 
   calls.push({
@@ -48,11 +60,16 @@ addthisMethods.forEach(method => {
   addthis[method] = queue.bind(method);
 });
 
-function onLoaded(...args) {
+function onLoaded() {
   const addthis = window.addthis;
 
+  if (!addthis) {
+    Log.warn('could not load addthis');
+    return;
+  }
+
   calls.forEach(call => {
-    addthis[call.method].apply(addthis, args);
+    callAddThisMethod(call.method, call.args);
   });
 }
 
